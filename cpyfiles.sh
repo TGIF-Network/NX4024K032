@@ -8,5 +8,5 @@
 
 sudo mount -o remount,rw /
 sudo mkdir /usr/local/etc/Nextion_Support
-sudo cp /tmp/Nextion.Images/{*.sh,*.fw} /usr/local/etc/Nextion_Support
+sudo cp /home/pi-star/Nextion_Temp/{*.sh,*.fw} /usr/local/etc/Nextion_Support
 sudo chmod +x /usr/local/etc/Nextion_Support/*.sh
