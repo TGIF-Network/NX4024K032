@@ -4,7 +4,7 @@
 #  BC. BC is used to offload caculatons from trying to do   #
 #  them in the display. Script can also be used to install  #
 #  other programs by addding them here. Update stripped.csv # 
-#  KF6S                                         04-10-2019  #
+#  KF6S                                         12-02-2020  #
 #############################################################
 set -o errexit
 set -o pipefail
