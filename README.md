@@ -1,5 +1,5 @@
 # NX3224K024
-The current screen upgrade for the 2.4 requires the user to do a manual copy of the new screen on the Pi. 
+The new screen upgrade for the 2.4 requires the user to do a manual copy of the new screen on the Pi. 
 SSH into the Pi and issues these commands at the command prompt:
 rpi-rw
 sudo rm -r -f /home/pi-star/Nextion_Temp
