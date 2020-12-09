@@ -1,6 +1,6 @@
 # NX3224K024
 The new screen upgrade for the 2.4 requires the user to do a manual copy of the new screen on the Pi. 
-SSH into the Pi and issues these commands at the command prompt:
+SSH into the Pi and issue these commands at the command prompt:
 
 rpi-rw
 
