@@ -9,6 +9,8 @@ sudo rm -r -f /home/pi-star/Nextion_Temp
 sudo git clone https://github.com/EA7KDO/NX3224K024 /home/pi-star/Nextion_Temp   
 (Note: There is a single space after NX3224K024 in the command line.)
 
+sudo /home/pi-star/Nextion_Temp/cpyfiles.sh        
+
 sudo cp /home/pi-star/Nextion_Temp/NX3224K024.tft /usr/local/etc/NX3224K024.tft   
 (Note: There is a single space after NX3224K024.tft in the command line.)
 
