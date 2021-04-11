@@ -6,7 +6,7 @@ rpi-rw
 
 sudo rm -r -f /home/pi-star/Nextion_Temp
 
-sudo git clone https://github.com/EA7KDO/NX3224K024 /home/pi-star/Nextion_Temp   
+sudo git clone --depth 1 https://github.com/EA7KDO/NX3224K024 /home/pi-star/Nextion_Temp   
 (Note: There is a single space after NX3224K024 in the command line.)
 
 sudo rm -r -f /usr/local/etc/Nextion_Support
