@@ -1,6 +1,7 @@
 # NX3224K024
-The new screen upgrade for the 2.4 requires the user to do a manual copy of the new screen on the Pi. 
-SSH into the Pi and issue these commands at the command prompt:
+If you have already updated to the previous TFT that was posted here before today (4/15/2021) you should be able to just do a normal Git, Copy & Flash procedure to install this latest update. This update increases the size of the Password field in the Profile screen so the new TGIF hotspot security password will fit. 
+
+If you are updating an older 2.4" screen and the normal Git, Copy & Flash procedure does not work then you may need to SSH into the Pi and issue these commands at the command prompt to do the update:
 
 rpi-rw
 
