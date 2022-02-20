@@ -8,13 +8,12 @@
 set -o errexit
 set -o pipefail
 
-if [ ! -f /var/log/pi-star/MMDVM* ]; then
-   echo "Startup"
-  exit
-fi
+if [ -n "$(ls -A /var/log/pi-star/MM* 2>/dev/null)" ]; then   
+#	echo "contains files (or is a file)" 
 
 Addr=$(sudo sed -nr "/^\[DMR Network\]/ { :l /^Address[ ]*=/ { s/.*=[ ]*//; p; q;}; n; b l;}" /etc/mmdvmhost)
-f2=$(sudo ls -x /var/log/pi-star/MMDVM* | tail -n 1)
+#f2=$(sudo ls -l /var/log/pi-star/MMDVM* | tail -n 1)
+f2=$(ls -l /var/log/pi-star/MMDVM* | tail -n 1 | cut -d " " -f 9)
 #echo "$f2"
 line=$(sudo cat "$f2" | grep transmission | tail -n 1)
 #echo "$line"
@@ -34,11 +33,14 @@ fi
 			NetNum=$(sudo tail -n1 "$f1" | cut -d " " -f 6)
 			NName=$(sudo sed -nr "/^\[DMR Network "${NetNum##*( )}"\]/ { :l /^Name[ ]*=/ { s/.*=[ ]*//; p; q;}; n; b l;}" /etc/dmrgateway)
 			NName=$(echo "$NName" | cut -d "_" -f1 |  tr '[:lower:]' '[:upper:]')
+#			NName=$(echo "$NName" |  tr '[:lower:]' '[:upper:]')
    			result=$(echo "DMR|$NName|GW:${NetNum##*( )}")
 		else
         
                 	GW="OFF"
-                	ms=$(sudo sed -n '/^[^#]*'"$Addr"'/p' /usr/local/etc/DMR_Hosts.txt | tail -n 1 | sed -E "s/[[:space:]]+/|/g" | cut -d '|' -f 1 | cut -d "_" -f 1)
+			ms1=$(sudo sed -n '/^[^#]*'"$Addr"'/p' /usr/local/etc/DMR_Hosts.txt | tail -n 1 | sed -E "s/[[:space:]]+/|/g") 
+#			ms=$(echo "$ms1" | cut -d '|' -f 1 | cut -d "_" -f 1)
+			ms=$(echo "$ms1" | cut -d '|' -f 1 )
                 	result=$(echo "DMR|$ms|NA")
 		fi
 #		echo "Mode=DMR"
@@ -69,3 +71,9 @@ echo "tg-$tg"
 	fi
 
 echo "$result"
+
+else   
+    echo "StartUp"
+	exit
+fi
+
