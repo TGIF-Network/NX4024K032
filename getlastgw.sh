@@ -9,24 +9,25 @@ set -o errexit
 set -o pipefail
 
 if [ -n "$(ls -A /var/log/pi-star/MM* 2>/dev/null)" ]; then   
-#	echo "contains files (or is a file)" 
+  f2=$(ls -1 /var/log/pi-star/MMDVM* | tail -n 1)
+  #echo "$f2"
+  line=$(sudo cat "$f2" | grep transmission | tail -n 1)
+  #echo "$line"
+  nMode=$(echo "$line" | cut -d " " -f 4 | cut -d "," -f 1)
+#  echo "$nMode"
+  result="Starting"
 
-Addr=$(sudo sed -nr "/^\[DMR Network\]/ { :l /^Address[ ]*=/ { s/.*=[ ]*//; p; q;}; n; b l;}" /etc/mmdvmhost)
-#f2=$(sudo ls -l /var/log/pi-star/MMDVM* | tail -n 1)
-f2=$(ls -l /var/log/pi-star/MMDVM* | tail -n 1 | cut -d " " -f 9)
-#echo "$f2"
-line=$(sudo cat "$f2" | grep transmission | tail -n 1)
-#echo "$line"
-nMode=$(echo "$line" | cut -d " " -f 4 | cut -d "," -f 1)
-#echo "$nMode"
-result="Starting"
-if [[ ! "$nMode" =~ ^(DMR|P25|YSF|NXDN)$ ]]; then
+  if [[ ! "$nMode" =~ ^(DMR|P25|YSF|NXDN)$ ]]; then
 	echo "NA|NA|NA"
 	exit
     
-fi
-        if [ "$nMode" == "DMR" ]; then
-        	if [ $Addr = "127.0.0.1" ]; then
+  fi
+
+#echo "Mode = $nMode"
+  
+  if [ "$nMode" == "DMR" ]; then
+	Addr=$(sudo sed -nr "/^\[DMR Network\]/ { :l /^Address[ ]*=/ { s/.*=[ ]*//; p; q;}; n; b l;}" /etc/mmdvmhost)
+        if [ $Addr = "127.0.0.1" ]; then
 			f1=$(sudo ls -x /var/log/pi-star/DMRGateway* | tail -n1)
                 	GW="ON"
                 	NetType=$(sudo tail -n1 "$f1" | cut -d " " -f 4)
@@ -35,20 +36,23 @@ fi
 			NName=$(echo "$NName" | cut -d "_" -f1 |  tr '[:lower:]' '[:upper:]')
 #			NName=$(echo "$NName" |  tr '[:lower:]' '[:upper:]')
    			result=$(echo "DMR|$NName|GW:${NetNum##*( )}")
-		else
+	else
         
                 	GW="OFF"
 			ms1=$(sudo sed -n '/^[^#]*'"$Addr"'/p' /usr/local/etc/DMR_Hosts.txt | tail -n 1 | sed -E "s/[[:space:]]+/|/g") 
 #			ms=$(echo "$ms1" | cut -d '|' -f 1 | cut -d "_" -f 1)
 			ms=$(echo "$ms1" | cut -d '|' -f 1 )
                 	result=$(echo "DMR|$ms|NA")
-		fi
-#		echo "Mode=DMR"
+	fi
+#	echo "Mode=DMR"
 
 
-        elif [ "$nMode" == "P25" ]; then
+    elif [ "$nMode" == "P25" ]; then
 #		echo "Mode=P25"
-		tg=$(sudo sed -nr "/^\[Network\]/ { :l /^Static[ ]*=/ { s/.*=[ ]*//; p; q;}; n; b l;}" /etc/p25gateway)
+  		line=$(sudo cat "$f2" | grep 'end of transmission' | tail -n 1)
+#echo "$line"
+ 		 tg=$(echo "$line" | cut -d " " -f 13 | cut -d "," -f1)
+#echo "$tg"
 		server=$(grep "$tg" /usr/local/etc/P25HostsLocal.txt |  tr '\t' ' ' | cut -d " " -f2 | cut -d "." -f1 | tr '[:lower:]' '[:upper:]')
 		if [ -z "$server" ]; then
 			server=$(grep "$tg" /usr/local/etc/P25Hosts.txt |  tr '\t' ' ' | cut -d " " -f2 | cut -d "." -f1 | tr '[:lower:]' '[:upper:]')
@@ -56,21 +60,21 @@ fi
 		result=$(echo "P25|$server|NA")
 	
 
-        elif [ "$nMode" == "YSF" ]; then
+     elif [ "$nMode" == "YSF" ]; then
 		tg=$(sed -nr "/^\[Network\]/ { :l /^Startup[ ]*=/ { s/.*=[ ]*//; p; q;}; n; b l;}" /etc/ysfgateway)
 		server=$(grep "$tg" /usr/local/etc/YSFHosts.txt |  tr '\t' ' ' | cut -d ";" -f3 | cut -d "." -f1 | tr '[:lower:]' '[:upper:]')
 		result=$(echo "YSF|$server|NA")
 	
 
-        elif [ "$nMode" == "NXDN" ]; then
-echo "Mode=NXDN"
+     elif [ "$nMode" == "NXDN" ]; then
+		echo "Mode=NXDN"
 		tg=$(sed -nr "/^\[Network\]/ { :l /^Static[ ]*=/ { s/.*=[ ]*//; p; q;}; n; b l;}" /etc/nxdngateway)
-echo "tg-$tg"
+		echo "tg-$tg"
 		server=$(grep "$tg" /usr/local/etc/NXDNHosts.txt |  tr '\t' ' ' | cut -d " " -f2 | cut -d "." -f1 | tr '[:lower:]' '[:upper:]')
 		result=$(echo "NXDN|$tg|NA")
-	fi
+      fi
 
-echo "$result"
+	echo "$result"
 
 else   
     echo "StartUp"
