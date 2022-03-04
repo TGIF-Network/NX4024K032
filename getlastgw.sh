@@ -49,9 +49,9 @@ if [ -n "$(ls -A /var/log/pi-star/MM* 2>/dev/null)" ]; then
 
     elif [ "$nMode" == "P25" ]; then
 #		echo "Mode=P25"
-  		line=$(sudo cat "$f2" | grep 'end of transmission' | tail -n 1)
+  		line=$(sudo cat "$f2" | grep 'end of voice transmission' | tail -n 1)
 #echo "$line"
- 		 tg=$(echo "$line" | cut -d " " -f 13 | cut -d "," -f1)
+ 		 tg=$(echo "$line" | cut -d " " -f 15 | cut -d "," -f1)
 #echo "$tg"
 		server=$(grep "$tg" /usr/local/etc/P25HostsLocal.txt |  tr '\t' ' ' | cut -d " " -f2 | cut -d "." -f1 | tr '[:lower:]' '[:upper:]')
 		if [ -z "$server" ]; then
