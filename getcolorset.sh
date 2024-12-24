@@ -1,6 +1,6 @@
 #!/bin/bash
 ############################################################
-#  Get Color Info from /usr/local/etc/Colors.ini           #
+#  Get Colors Info from /usr/local/etc/Colors.ini          #
 #                                                          #
 #  Returns a Binary Coded Value                            #
 #                                                          #
@@ -56,3 +56,4 @@ m5=$(sed -n '/^[ \t]*\[ColorSet'"$SetNum"'\]/,/\[/s/^[ \t]*Split[ \t]*=[ \t]*//p
 mt="$SetNum|$m5|$m1|$m2|$m3|$m4"
 echo "$mt"
 #echo "$m1"
+
